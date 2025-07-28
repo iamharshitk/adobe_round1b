@@ -1,93 +1,151 @@
-# Challenge 1b: Multi-Collection PDF Analysis
+# 🧠 Challenge 1B: Multi-Collection PDF Analysis
 
-## Overview
-Advanced PDF analysis solution that processes multiple document collections and extracts relevant content based on specific personas and use cases.
+## 📄 Overview  
+This solution addresses **Challenge 1B** of the Adobe India Hackathon Round 2. It performs **persona-driven, multi-document PDF analysis**, extracting and ranking the most relevant sections based on given roles and tasks.
 
-## Project Structure
+---
+
+## 📁 Directory Structure
 ```
 Challenge_1b/
 ├── Collection 1/                    # Travel Planning
-│   ├── PDFs/                       # South of France guides
-│   ├── challenge1b_input.json      # Input configuration
-│   └── challenge1b_output.json     # Analysis results
+│   ├── PDFs/                       
+│   ├── challenge1b_input.json     
+│   └── challenge1b_output.json    
 ├── Collection 2/                    # Adobe Acrobat Learning
-│   ├── PDFs/                       # Acrobat tutorials
-│   ├── challenge1b_input.json      # Input configuration
-│   └── challenge1b_output.json     # Analysis results
+│   ├── PDFs/                       
+│   ├── challenge1b_input.json     
+│   └── challenge1b_output.json    
 ├── Collection 3/                    # Recipe Collection
-│   ├── PDFs/                       # Cooking guides
-│   ├── challenge1b_input.json      # Input configuration
-│   └── challenge1b_output.json     # Analysis results
+│   ├── PDFs/                       
+│   ├── challenge1b_input.json     
+│   └── challenge1b_output.json    
+├── process_collections.py          # Main processing script
+├── Dockerfile                      # Containerization config
+├── requirements.txt                # Python dependencies
 └── README.md
 ```
 
-## Collections
+---
 
-### Collection 1: Travel Planning
-- **Challenge ID**: round_1b_002
-- **Persona**: Travel Planner
-- **Task**: Plan a 4-day trip for 10 college friends to South of France
-- **Documents**: 7 travel guides
+## 📚 Collections
 
-### Collection 2: Adobe Acrobat Learning
-- **Challenge ID**: round_1b_003
-- **Persona**: HR Professional
-- **Task**: Create and manage fillable forms for onboarding and compliance
-- **Documents**: 15 Acrobat guides
+### 📌 Collection 1: Travel Planning
+- **Challenge ID**: `round_1b_002`
+- **Persona**: Travel Planner  
+- **Task**: Plan a 4-day trip to the South of France for 10 college friends  
+- **Input**: 7 regional travel guides  
+- **Goal**: Extract and rank top itinerary and attraction sections
 
-### Collection 3: Recipe Collection
-- **Challenge ID**: round_1b_001
-- **Persona**: Food Contractor
-- **Task**: Prepare vegetarian buffet-style dinner menu for corporate gathering
-- **Documents**: 9 cooking guides
+---
 
-## Input/Output Format
+### 📌 Collection 2: Adobe Acrobat Learning
+- **Challenge ID**: `round_1b_003`
+- **Persona**: HR Professional  
+- **Task**: Create & manage fillable forms for employee onboarding and compliance  
+- **Input**: 15 Adobe Acrobat training PDFs  
+- **Goal**: Extract fillable form documentation and best practices
 
-### Input JSON Structure
+---
+
+### 📌 Collection 3: Recipe Collection
+- **Challenge ID**: `round_1b_001`
+- **Persona**: Food Contractor  
+- **Task**: Prepare a vegetarian buffet-style dinner for a corporate event  
+- **Input**: 9 cooking guides  
+- **Goal**: Extract vegetarian recipes with prep instructions
+
+---
+
+## 📥 Input Format (`challenge1b_input.json`)
 ```json
 {
   "challenge_info": {
     "challenge_id": "round_1b_XXX",
-    "test_case_name": "specific_test_case"
+    "test_case_name": "sample_case"
   },
-  "documents": [{"filename": "doc.pdf", "title": "Title"}],
-  "persona": {"role": "User Persona"},
-  "job_to_be_done": {"task": "Use case description"}
+  "documents": [
+    {"filename": "guide1.pdf", "title": "French Riviera Guide"},
+    {"filename": "guide2.pdf", "title": "Budget Travel Tips"}
+  ],
+  "persona": {
+    "role": "Travel Planner"
+  },
+  "job_to_be_done": {
+    "task": "Plan a 4-day trip to the South of France"
+  }
 }
 ```
 
-### Output JSON Structure
+---
+
+## 📤 Output Format (`challenge1b_output.json`)
 ```json
 {
   "metadata": {
-    "input_documents": ["list"],
-    "persona": "User Persona",
-    "job_to_be_done": "Task description"
+    "input_documents": ["guide1.pdf", "guide2.pdf"],
+    "persona": "Travel Planner",
+    "job_to_be_done": "Plan a 4-day trip to the South of France"
   },
   "extracted_sections": [
     {
-      "document": "source.pdf",
-      "section_title": "Title",
+      "document": "guide1.pdf",
+      "section_title": "Top Attractions in Nice",
       "importance_rank": 1,
-      "page_number": 1
+      "page_number": 3
     }
   ],
   "subsection_analysis": [
     {
-      "document": "source.pdf",
-      "refined_text": "Content",
-      "page_number": 1
+      "document": "guide1.pdf",
+      "refined_text": "Nice offers a rich blend of beaches, history, and food experiences...",
+      "page_number": 3
     }
   ]
 }
 ```
 
-## Key Features
-- Persona-based content analysis
-- Importance ranking of extracted sections
-- Multi-collection document processing
-- Structured JSON output with metadata
+---
+
+## ⚙️ How to Run (Locally or via Docker)
+
+### 🐳 Docker Build
+```bash
+docker build --platform linux/amd64 -t adobe-round1b:submission .
+```
+
+### 🧪 Docker Run (Linux/macOS)
+```bash
+mkdir -p output/repoidentifier
+
+docker run --rm \
+  -v "$(pwd)/Collection_1/PDFs:/app/input:ro" \
+  -v "$(pwd)/Collection_1:/app/output" \
+  --network none \
+  adobe-round1b:submission
+```
+
+### 🪟 Docker Run (Windows Git Bash)
+```bash
+docker run --rm \
+  -v "/$PWD/Collection_1/PDFs:/app/input:ro" \
+  -v "/$PWD/Collection_1:/app/output" \
+  --network none \
+  adobe-round1b:submission
+```
 
 ---
 
-**Note**: This README provides a brief overview of the Challenge 1b solution structure based on available sample data. 
+## ✅ Features
+- Multi-document processing
+- Task-aware section and content extraction
+- Hierarchical content ranking
+- Persona-role relevance matching
+- Fully containerized, network-isolated inference
+
+---
+
+## 📌 Notes
+- Processing is **offline**, lightweight, and runs under 10 seconds for small collections
+- Uses **PyMuPDF** for fast parsing and scoring
+- Fully compatible with **Docker AMD64**, no internet access required
